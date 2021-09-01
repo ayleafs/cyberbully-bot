@@ -3,7 +3,6 @@ import * as Config from './utils/config.js';
 import * as Registry from './commands/registry.js';
 
 import { REST } from '@discordjs/rest';
-import { play } from './commands/play.js';
 
 
 export const client = new Discord.Client({ intents: [ 'GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES' ] });
