@@ -78,7 +78,7 @@ export async function registerAll() {
         return; // make sure the export is a CommandBase
       }
 
-      slashCommands.set(key, value);
+      slashCommands.set(value.name, value);
     }
   }
 }
