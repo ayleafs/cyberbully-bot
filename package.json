@@ -1,0 +1,31 @@
+{
+  "name": "cb-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node .",
+    "dev": "set __DEV=1 && nodemon -w src ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayleafs/cyberbully-bot.git"
+  },
+  "author": "leafs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ayleafs/cyberbully-bot/issues"
+  },
+  "homepage": "https://github.com/ayleafs/cyberbully-bot#readme",
+  "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.22.0",
+    "discord.js": "^13.1.0",
+    "yt-search": "^2.10.1",
+    "ytdl-core": "^4.9.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
