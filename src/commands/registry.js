@@ -78,7 +78,7 @@ export async function registerAll() {
         return; // make sure the export is a CommandBase
       }
 
-      slashCommands.set(base.name, value);
+      slashCommands.set(key, value);
     }
   }
 }
@@ -132,16 +132,17 @@ export async function handle(interaction) {
     return;
   }
 
-  for (let executor of Object.values(registry)) {
-    // check for a matching name
-    if (executor.ids.get(interaction.guild.id) !== interaction.commandId) {
-      continue;
-    }
+  let commandName = config().commands[interaction.guild?.id][interaction.commandId];
+  let executor    = slashCommands.get(commandName);
 
-    // otherwise run the executor
-    await executor.run(interaction);
-    break;
+  // make sure both of these are present
+  if (!commandName || !executor) {
+    interaction.reply({ content: 'Not implemented', ephemeral: true });
+    return;
   }
+
+  // otherwise run the executor
+  await executor.run(interaction);
 }
 
 // export both these references
