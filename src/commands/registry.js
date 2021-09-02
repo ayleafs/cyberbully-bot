@@ -21,7 +21,7 @@ export default class CommandBase extends SlashCommandBuilder {
    * Handles the execution event
    * @param {CommandInteraction} interaction 
    */
-  run = async (interaction) => interaction.reply({ content: 'Not implemented yet.', ephemeral: true });
+  run = async (interaction) => interaction.reply(replyEmbed('Not implemented yet'));
 
   constructor(name, defaultPerm = true) {
     super();
@@ -67,15 +67,15 @@ export async function registerAll() {
   for (let file of files) {
     // make sure we don't attempt to register this file
     if (file === __filename) {
-      return;
+      continue;
     }
 
     let base = await import(`./${path.relative('.', file)}`);
 
     // go through each value
-    for (let [ key, value ] of Object.entries(base)) {
+    for (let value of Object.values(base)) {
       if (!(value instanceof CommandBase)) {
-        return; // make sure the export is a CommandBase
+        continue; // make sure the export is a CommandBase
       }
 
       slashCommands.set(value.name, value);
@@ -137,7 +137,7 @@ export async function handle(interaction) {
 
   // make sure both of these are present
   if (!commandName || !executor) {
-    interaction.reply({ content: 'Not implemented', ephemeral: true });
+    interaction.reply(replyEmbed('Not implemented'));
     return;
   }
 
