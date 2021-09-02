@@ -5,6 +5,10 @@ import fs from 'fs';
 let configInstance = {
   token: 'PUT TOKEN HERE',
 
+  player: {
+    results_ephemeral: true
+  },
+
   commands: {
     guild_id: {
       hash: '',
@@ -42,7 +46,7 @@ export function readConfig() {
     return config;
   } catch (e) {
     console.error(e);
-    console.log('Overwriting old config due to inability to read current one.');
+    console.log('Overwriting old config due to inability to read current one');
     // uh oH that'S tOo Bad
     writeConfig();
   }

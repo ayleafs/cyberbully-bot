@@ -3,6 +3,14 @@ import path from 'path';
 import fs from 'fs';
 
 
+export function basicEmbed(message, options = {}) {
+  return { description: message, ...options };
+}
+
+export function replyEmbed(message, ephemeral = true, options = {}) {
+  return { embeds: [ basicEmbed(message, options) ], ephemeral };
+}
+
 export function swriteFileSync(fileName, data, options = { encoding: 'utf-8' }) {
   const folder = path.dirname(fileName);
   if (!fs.existsSync(folder)) {
