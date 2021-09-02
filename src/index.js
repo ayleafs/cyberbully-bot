@@ -1,11 +1,12 @@
 import Discord from 'discord.js';
 import * as Config from './utils/config.js';
 import * as Registry from './commands/registry.js';
+import * as Player from './music/player.js';
 
 import { REST } from '@discordjs/rest';
 
 
-export const client = new Discord.Client({ intents: [ 'GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES' ] });
+export const client = new Discord.Client({ intents: [ 'GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES', 'GUILD_VOICE_STATES' ] });
 export const rest   = new REST({ version: 9 });
 
 client.once('ready', async () => {
@@ -31,7 +32,8 @@ client.once('ready', async () => {
     if (!result) console.log(`Skipping guild (${guild.id}), already up-to-date`);
   }
 
-  console.log('Registered');
+  console.log('Registering the player events');
+  Player.registerEvents();
 });
 
 client.on('messageCreate', async msg => {
