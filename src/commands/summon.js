@@ -18,9 +18,9 @@ export const summon = new CommandBase('summon')
     }
 
     if (!getPlayer(member.guild).connect(member.voice.channel)) {
-      interaction.reply((replyEmbed('I am already in this channel, notice me?')));
+      interaction.reply(replyEmbed('I am already in this channel, notice me?'));
       return;
     }
 
-    interaction.reply(replyEmbed(`Joining ${member}'s voice channel`));
+    interaction.reply(replyEmbed(`Joining ${member}'s voice channel`, false));
   });
