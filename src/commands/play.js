@@ -49,7 +49,15 @@ export const play = new CommandBase('play')
     let track = new Track(selection.title, selection.url);
 
     player.connect(member.voice.channel);
-    player.addToQueue(track);
 
-    interaction.followUp({ embeds: [ Player.Messages.addedToQueue(track) ] });
+    // this isn't the same type but it works
+    player.lastChannel = interaction.channel;
+
+    let autoPlayed = player.addToQueue(track);
+    if (!autoPlayed) {
+      interaction.followUp({ embeds: [ Player.Messages.addedToQueue(track) ] });
+      return;
+    }
+
+    interaction.followUp({ embeds: [ Player.Messages.nowPlaying(player.currentTrack) ] });
   });
