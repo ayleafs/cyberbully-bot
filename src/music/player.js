@@ -3,7 +3,7 @@ import { Collection, Guild, GuildMember, VoiceChannel } from 'discord.js';
 
 import { raw as ytdl } from 'youtube-dl-exec';
 import { client } from '../index.js';
-import { basicEmbed } from '../utils/index.js';
+import { basicEmbed, replyEmbed } from '../utils/index.js';
 import Queue, { Track } from './queue.js';
 
 
@@ -71,6 +71,10 @@ export class Player {
     players.set(this.guild.id, this);
   }
 
+  static canCreate(member) {
+    return member instanceof GuildMember && member.voice.channel;
+  }
+
   /**
    * @param {GuildMember} member 
    * @returns 
@@ -126,11 +130,18 @@ export class Player {
 
     this.playNext();
   }
+
+  clearQueue() {
+    // clear the queue and stop the player
+    this.queue.clear();
+    this.player.stop();
+
+    this.currentTrack = null;
+  }
   
-  playNext(force = false) {
-    if (force) {
+  playNext() {
+    if (this.player.state.status === AudioPlayerStatus.Playing) {
       this.player.stop();
-      return;
     }
 
     if (this.queue.empty) {
@@ -155,13 +166,19 @@ export class Player {
     }
 
     stream.once('spawn', () => {
+      // once the YouTube stream begins start taking the output and
+      // demux it into an OGG or WebM format to play as an audio resource
       demuxProbe(stream.stdout)
         .then(probe => this.player.play(createAudioResource(probe.stream, { metadata: this, inputType: probe.type })));
     });
   }
 
   die() {
+    this.clearQueue();
+
     this.player.stop(true);
+
+    // destroy and nullify the connection
     this.connection.destroy();
     this.connection = null;
 
@@ -171,6 +188,10 @@ export class Player {
 }
 
 export class Messages {
+  static denied() {
+    return replyEmbed('You cannot do this right now');
+  }
+
   static addedToQueue({ songName, url }) {
     return basicEmbed(`Added [${songName}](${url}) to the queue`);
   }
@@ -179,9 +200,21 @@ export class Messages {
     return basicEmbed(`Skipping [${songName}](${url})`);
   }
 
+  static clearedQueue() {
+    return replyEmbed('Emptied the queue, no songs, complete silence', false);
+  }
+
+  // == TODO: figure out what channel to send these two in ==
+
   static nowPlaying({ songName, url }) {
     return basicEmbed(`Now playing [${songName}](${url})`);
   }
+
+  static disconnected() {
+    return basicEmbed('Everyone left the voice channel, departing as well 👋');
+  }
+  
+  // ============================================================
 }
 
 /**

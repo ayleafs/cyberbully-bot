@@ -10,7 +10,7 @@ export const skip = new CommandBase('skip')
 
     let player = getPlayer(member.guild);
     if (!player.isValid(member)) {
-      interaction.reply(replyEmbed('You cannot do this right now'));
+      interaction.reply(Messages.denied());
       return;
     }
 

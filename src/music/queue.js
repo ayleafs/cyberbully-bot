@@ -1,6 +1,11 @@
 export default class Queue {
   data = [];
 
+  clear() {
+    // set a new array
+    this.data = [];
+  }
+
   peek() {
     return this.empty ? this.data[0] : undefined;
   }
