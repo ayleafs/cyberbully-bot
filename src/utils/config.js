@@ -6,7 +6,8 @@ let configInstance = {
   token: 'PUT TOKEN HERE',
 
   player: {
-    results_ephemeral: true
+    results_ephemeral: true,
+    search_count: 10
   },
 
   commands: {
