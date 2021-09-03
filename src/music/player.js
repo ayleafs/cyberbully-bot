@@ -52,6 +52,7 @@ export function registerEvents() {
       return;
     }
 
+    player.lastChannel?.send({ embeds: [ Messages.disconnected() ] });
     player.die();
   });
 }
@@ -67,7 +68,10 @@ export class Player {
 
     this.player = createAudioPlayer();
     this.queue = new Queue();
-    
+
+    // default channel set to systemChannel
+    this.lastChannel = guild.systemChannel;
+
     players.set(this.guild.id, this);
   }
 
@@ -109,6 +113,11 @@ export class Player {
       // if it goes from Idle to non-idle then queue the next song
       if (olds.status !== AudioPlayerStatus.Idle && news.status === AudioPlayerStatus.Idle) {
         this.playNext();
+
+        // only send if the currentTrack isn't null
+        if (this.currentTrack) {
+          this.lastChannel?.send({ embeds: [ Messages.nowPlaying(this.currentTrack) ] });
+        }
       }
     });
 
@@ -125,10 +134,11 @@ export class Player {
     
     // only play the next song if it is idle OR the queue is empty
     if (this.player.state.status === AudioPlayerStatus.Playing && !this.queue.empty) {
-      return;
+      return false;
     }
 
     this.playNext();
+    return true; // true means it gets insta played
   }
 
   clearQueue() {
@@ -142,6 +152,7 @@ export class Player {
   playNext() {
     if (this.player.state.status === AudioPlayerStatus.Playing) {
       this.player.stop();
+      return; // we don't continue to allow the stateChange event to handle it
     }
 
     if (this.queue.empty) {
@@ -159,7 +170,7 @@ export class Player {
       q: true, 
       f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio', 
       r: '100K'
-    }, { stdio: [ 'ignore', 'pipe', 'inherit' ] });
+    }, { stdio: [ 'ignore', 'pipe' ] });
     
     if (!stream.stdout) {
       return;
@@ -175,8 +186,6 @@ export class Player {
 
   die() {
     this.clearQueue();
-
-    this.player.stop(true);
 
     // destroy and nullify the connection
     this.connection.destroy();
@@ -204,8 +213,6 @@ export class Messages {
     return replyEmbed('Emptied the queue, no songs, complete silence', false);
   }
 
-  // == TODO: figure out what channel to send these two in ==
-
   static nowPlaying({ songName, url }) {
     return basicEmbed(`Now playing [${songName}](${url})`);
   }
@@ -213,8 +220,6 @@ export class Messages {
   static disconnected() {
     return basicEmbed('Everyone left the voice channel, departing as well 👋');
   }
-  
-  // ============================================================
 }
 
 /**

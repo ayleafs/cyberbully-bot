@@ -22,5 +22,5 @@ export const skip = new CommandBase('skip')
     interaction.reply({ embeds: [ Messages.skippingSong(player.currentTrack) ] });
 
     // play the next song in queue
-    player.playNext(true);
+    player.playNext();
   });
