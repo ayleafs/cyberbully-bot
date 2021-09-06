@@ -18,6 +18,6 @@ Here's a list of things that I hope to accomplish on this bot eventually
 - [ ] Seek through songs
 - [ ] Loop mode
   - [ ] Current song
-  - [ ] Queue
+  - [x] Queue
 - [ ] Play Spotify links
 - [ ] Play SoundCloud links
