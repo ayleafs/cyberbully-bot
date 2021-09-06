@@ -141,6 +141,17 @@ export class Player {
     return true; // true means it gets insta played
   }
 
+  toggleLoop() {
+    let loopMode = this.queue.loop = !this.queue.loop;
+
+    // add the current track
+    if (loopMode && this.currentTrack) {
+      this.queue.enqueue(this.currentTrack);
+    }
+    
+    return loopMode;
+  }
+
   clearQueue() {
     // clear the queue and stop the player
     this.queue.clear();

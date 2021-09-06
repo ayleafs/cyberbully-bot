@@ -12,8 +12,5 @@ export const loop = new CommandBase('loop')
       return;
     }
 
-    // toggles the loop
-    player.queue.loop = !player.queue.loop;
-
-    interaction.reply(Messages.loopToggled(player.queue.loop));
+    interaction.reply(Messages.loopToggled(player.toggleLoop()));
   });
