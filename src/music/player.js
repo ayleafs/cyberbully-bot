@@ -43,13 +43,13 @@ export function registerEvents() {
       return;
     }
 
-    let player = players.get(oldState.guild.id);
-    if (!player) {
-      return; // no player in this channel
-    }
-
     if (!oldState.channel.isVoice()) {
       return;
+    }
+
+    let player = players.get(oldState.guild.id);
+    if (!player || player.currentVoice?.id !== oldState.channelId) {
+      return; // no player in this channel
     }
 
     player.lastChannel?.send({ embeds: [ Messages.disconnected() ] });
