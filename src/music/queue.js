@@ -1,5 +1,7 @@
 export default class Queue {
   data = [];
+  loop = false;
+
 
   clear() {
     // set a new array
@@ -15,7 +17,13 @@ export default class Queue {
   }
 
   next() {
-    return this.data.shift();
+    let next = this.data.shift();
+
+    if (this.loop) {
+      this.enqueue(next);
+    }
+
+    return next;
   }
 
   get empty() {

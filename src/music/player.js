@@ -201,6 +201,10 @@ export class Messages {
     return replyEmbed('You cannot do this right now');
   }
 
+  static loopToggled(toggle) {
+    return replyEmbed(`Looping mode toggled **${toggle ? 'on' : 'off'}**`, false);
+  }
+
   static addedToQueue({ songName, url }) {
     return basicEmbed(`Added [${songName}](${url}) to the queue`);
   }
