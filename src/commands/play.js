@@ -50,13 +50,24 @@ export const play = new CommandBase('play')
 
     // handle multiple songs to play
     if (toPlay.length > 1) {
+      let isPlaying;
+
       for (let video of toPlay) {
         let track = new Track(video.title, `https://www.youtube.com/watch?v=${video.videoId}`);
-        player.addToQueue(track);
+        
+        if (!player.addToQueue(track)) {
+          continue;
+        }
+
+        // this is the song that got insta-queued
+        isPlaying = track;
       }
 
       // lmfao
-      interaction.followUp({ embeds: [ Player.Messages.queuedPlaylist({ songCount: toPlay.length }) ] })
+      interaction.followUp({ embeds: [
+        Player.Messages.queuedPlaylist({ songCount: toPlay.length}),
+        isPlaying ? Player.Messages.nowPlaying(isPlaying) : null
+      ] })
       return;
     }
 
