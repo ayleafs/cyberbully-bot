@@ -132,8 +132,8 @@ export class Player {
   addToQueue(track) {
     this.queue.enqueue(track);
     
-    // only play the next song if it is idle OR the queue is empty
-    if (this.player.state.status === AudioPlayerStatus.Playing && !this.queue.empty) {
+    // only play the next song if the current one is non-existent
+    if (this.currentTrack) {
       return false;
     }
 
@@ -216,6 +216,10 @@ export class Messages {
     return replyEmbed(`Looping mode toggled **${toggle ? 'on' : 'off'}**`, false);
   }
 
+  static queuedPlaylist({ songCount, playlistTitle, playlistUrl }) {
+   return basicEmbed(`Added ${songCount.toLocaleString('en-US')} songs to the queue`) 
+  } 
+ 
   static addedToQueue({ songName, url }) {
     return basicEmbed(`Added [${songName}](${url}) to the queue`);
   }

@@ -11,7 +11,7 @@ It is a music bot for Discord.
 Here's a list of things that I hope to accomplish on this bot eventually
 
 - [x] Play YouTube links
-- [ ] Auto-queue YouTube playlists
+- [x] Auto-queue YouTube playlists
 - [ ] Queue Manager
   - [ ] Pause current song
   - [x] Clear queue

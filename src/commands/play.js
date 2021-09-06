@@ -1,4 +1,5 @@
 import CommandBase from './registry.js';
+import path from 'path';
 
 import * as Player from '../music/player.js';
 import ytSearch from 'yt-search';
@@ -28,27 +29,39 @@ export const play = new CommandBase('play')
     // check if the URL is YouTube
     let regexResult = youtubeRegex.exec(query);
     let results;
+    let toPlay; // list of videos to play
 
     interaction.deferReply();
 
     // this will work for youtube links
     if (regexResult) {
-      try {
-        let result = await ytSearch({ videoId: regexResult[4] });
-        results = { videos: [ { ...result, url: query } ] };
-      } catch (err) { }
+      results = await parseYouTubeUrl(query, regexResult);
+      toPlay = [ ...results ];
     }
 
     // if they've not been set yet
-    if (!results) {
+    if (!results || results?.length === 0) {
       results = await ytSearch({ query, category: 'music' });
+      toPlay = [ results.videos[0] ];
     }
 
     let player = Player.getPlayer(member.guild);
-    let selection = results.videos[0];
-    let track = new Track(selection.title, selection.url);
-
     player.connect(member.voice.channel);
+
+    // handle multiple songs to play
+    if (toPlay.length > 1) {
+      for (let video of toPlay) {
+        let track = new Track(video.title, `https://www.youtube.com/watch?v=${video.videoId}`);
+        player.addToQueue(track);
+      }
+
+      // lmfao
+      interaction.followUp({ embeds: [ Player.Messages.queuedPlaylist({ songCount: toPlay.length }) ] })
+      return;
+    }
+
+    let selection = toPlay[0];
+    let track = new Track(selection.title, selection.url);
 
     // this isn't the same type but it works
     player.lastChannel = interaction.channel;
@@ -61,3 +74,34 @@ export const play = new CommandBase('play')
 
     interaction.followUp({ embeds: [ Player.Messages.nowPlaying(player.currentTrack) ] });
   });
+
+async function parseYouTubeUrl(url, regexResult) {
+  let args = parseUrlArgs(url);
+
+  // check for a list key or if the regex matched 'playlist' as the video ID
+  if (regexResult[4] === 'playlist' || 'list' in args) {
+    return (await ytSearch({ listId: args.list })).videos;
+  }
+
+  try {
+    return [ await ytSearch({ videoId: regexResult[4] }) ];
+  } catch (err) { }
+
+  // empty if we reach here
+  return [ ];
+}
+
+function parseUrlArgs(url) {
+  // get to the right of the ?
+  let args = path.basename(url).split('?')[1];
+  args = args.split('&');
+
+  // setup all the arguments
+  let mappedArgs = {};
+  for (let arg of args) {
+    let [ key, value ] = arg.split('=', 2);
+    mappedArgs[key] = value;
+  }
+
+  return mappedArgs;
+}
