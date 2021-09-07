@@ -23,3 +23,4 @@ Here's a list of things that I hope to accomplish on this bot eventually
   - [x] Queue
 - [ ] Play Spotify links
 - [ ] Play SoundCloud links
+- [ ] Play raw mp3 files
