@@ -48,6 +48,9 @@ export const play = new CommandBase('play')
     let player = Player.getPlayer(member.guild);
     player.connect(member.voice.channel);
 
+    // this isn't the same type but it works
+    player.lastChannel = interaction.channel;
+
     // handle multiple songs to play
     if (toPlay.length > 1) {
       let isPlaying;
@@ -73,9 +76,6 @@ export const play = new CommandBase('play')
 
     let selection = toPlay[0];
     let track = new Track(selection.title, selection.url);
-
-    // this isn't the same type but it works
-    player.lastChannel = interaction.channel;
 
     let autoPlayed = player.addToQueue(track);
     if (!autoPlayed) {
