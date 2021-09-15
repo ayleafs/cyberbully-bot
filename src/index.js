@@ -49,6 +49,11 @@ client.on('messageCreate', async msg => {
     return;
   }
 
+  // make sure the message is the right length
+  if (msg.content.length >= 1500) {
+    return;
+  }
+
   // run with a 10% chance and only every 60 seconds
   if (Date.now() - lastMessage < 60) {
     return;
