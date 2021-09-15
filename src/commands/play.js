@@ -103,6 +103,10 @@ async function parseYouTubeUrl(url, regexResult) {
 }
 
 function parseUrlArgs(url) {
+  if (!url.includes('?')) {
+    return {}; // yikes
+  }
+
   // get to the right of the ?
   let args = path.basename(url).split('?')[1];
   args = args.split('&');
