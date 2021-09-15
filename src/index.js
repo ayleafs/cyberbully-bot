@@ -36,9 +36,50 @@ client.once('ready', async () => {
   Player.registerEvents();
 });
 
+let lastMessage = 0;
+
 client.on('messageCreate', async msg => {
   if (msg.author.bot) {
     return; // ignore bot messages
+  }
+
+  // check for messages that are equal to bbtom
+  if (msg.content.toLowerCase() === 'bbtom') {
+    msg.reply('woah there');
+    return;
+  }
+
+  // run with a 10% chance and only every 60 seconds
+  if (Date.now() - lastMessage < 60) {
+    return;
+  }
+
+  if (Math.random() > .1) {
+    return;
+  }
+
+  let hi = /(^h[ie][yl]*?o*) *tom+$/i;
+  let search = hi.exec(msg.content);
+
+  // respond to people saying hi
+  if (search) {
+    let hey = search[1];
+    let greeting = `${hey} ${msg.author.username.toLowerCase()}`;
+
+    // count the y's and if it's larger than 4 add a wink
+    if ((hey.match(/y/gi) || []).length >= 4) {
+      greeting += ' ;)';
+    }
+
+    msg.reply(greeting);
+    lastMessage = Date.now();
+    return;
+  }
+
+  // check the regex101 link for examples: https://regex101.com/r/hImFl6/
+  if (/(i? +do *n[o']t like|i hate|die|fuck) +(you ?)?tom/gi.test(msg.content)) {
+    lastMessage = Date.now();
+    msg.reply(':(');
   }
 });
 
