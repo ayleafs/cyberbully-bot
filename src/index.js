@@ -76,15 +76,15 @@ client.on('messageCreate', async msg => {
       greeting += ' ;)';
     }
 
-    msg.reply(greeting);
+    msg.reply({ content: greeting, failIfNotExists: false });
     lastMessage = Date.now();
     return;
   }
 
   // check the regex101 link for examples: https://regex101.com/r/hImFl6/
-  if (/(i? +do *n[o']t like|i hate|die|fuck) +(you ?)?tom/gi.test(msg.content)) {
+  if (/(i? +do *n[o']?t like|i hate|die|fuck) +(you ?)?tom/gi.test(msg.content)) {
     lastMessage = Date.now();
-    msg.reply(':(');
+    msg.reply({ content: ':(', failIfNotExists: false });
   }
 });
 
