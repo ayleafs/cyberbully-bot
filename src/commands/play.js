@@ -42,7 +42,9 @@ export const play = new CommandBase('play')
     // if they've not been set yet
     if (!results || results?.length === 0) {
       results = await ytSearch({ query, category: 'music' });
-      toPlay = [ ...results.videos ];
+      toPlay = [ ];
+
+      if (results.videos.length >= 1) toPlay.push(results.videos[0]);
     }
 
     let player = Player.getPlayer(member.guild);
