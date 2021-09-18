@@ -66,11 +66,13 @@ export const play = new CommandBase('play')
         isPlaying = track;
       }
 
+      let embeds = [ Player.Messages.queuedPlaylist({ songCount: toPlay.length}) ];
+      if (isPlaying) {
+        embeds.push(Player.Messages.nowPlaying(isPlaying));
+      }
+
       // lmfao
-      interaction.followUp({ embeds: [
-        Player.Messages.queuedPlaylist({ songCount: toPlay.length}),
-        isPlaying ? Player.Messages.nowPlaying(isPlaying) : null
-      ] })
+      interaction.followUp({ embeds })
       return;
     }
 
