@@ -76,6 +76,11 @@ export const play = new CommandBase('play')
       return;
     }
 
+    if (toPlay.length === 0) {
+      interaction.followUp(Player.Messages.noSuchThing());
+      return;
+    }
+
     let selection = toPlay[0];
     let track = new Track(selection.title, selection.url);
 

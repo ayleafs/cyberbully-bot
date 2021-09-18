@@ -212,6 +212,10 @@ export class Messages {
     return replyEmbed('You cannot do this right now');
   }
 
+  static noSuchThing() {
+    return replyEmbed('No such thing, try giving me a real search term');
+  }
+
   static loopToggled(toggle) {
     return replyEmbed(`Looping mode toggled **${toggle ? 'on' : 'off'}**`, false);
   }
