@@ -55,11 +55,7 @@ client.on('messageCreate', async msg => {
   }
 
   // run with a 10% chance and only every 60 seconds
-  if (Date.now() - lastMessage < 60) {
-    return;
-  }
-
-  if (Math.random() > .1) {
+  if (Date.now() - lastMessage < 60 || Math.random() > .1) {
     return;
   }
 
