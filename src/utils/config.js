@@ -21,7 +21,7 @@ let configInstance = {
   }
 };
 
-const configPath = Utils.pathTo('config.json');
+const configPath = Utils.isDev() ? Utils.pathTo('config_dev.json') : Utils.pathTo('config.json');
 
 // the last time the config was read from
 let lastRead = 0;
