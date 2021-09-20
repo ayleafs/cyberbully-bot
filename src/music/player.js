@@ -39,11 +39,7 @@ export function registerEvents() {
       return; // this is a join event
     }
 
-    if (oldState.channel.members.size > 1) {
-      return;
-    }
-
-    if (!oldState.channel.isVoice()) {
+    if (!oldState.channel.isVoice() || oldState.channel.members.size > 1) {
       return;
     }
 
@@ -175,24 +171,12 @@ export class Player {
     this.playYouTube(this.currentTrack.url);
   }
 
-  playYouTube(url) {
-    let stream = ytdl(url, {
-      o: '-',
-      q: true, 
-      f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio', 
-      r: '100K'
-    }, { stdio: [ 'ignore', 'pipe' ] });
-    
-    if (!stream.stdout) {
+  playUniversal(audioResource) {
+    if (!this.connection || !this.player) {
       return;
     }
 
-    stream.once('spawn', () => {
-      // once the YouTube stream begins start taking the output and
-      // demux it into an OGG or WebM format to play as an audio resource
-      demuxProbe(stream.stdout)
-        .then(probe => this.player.play(createAudioResource(probe.stream, { metadata: this, inputType: probe.type })));
-    });
+    this.player.play(audioResource);
   }
 
   die() {
