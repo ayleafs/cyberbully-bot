@@ -51,7 +51,7 @@ export const play = new CommandBase('play')
     player.connect(member.voice.channel);
 
     // this isn't the same type but it works
-    player.lastChannel = interaction.channel;
+    player.msgCtx.activeChannel = interaction.channel;
 
     // handle multiple songs to play
     if (toPlay.length > 1) {

@@ -1,10 +1,11 @@
-import { AudioPlayerStatus, createAudioPlayer, createAudioResource, demuxProbe, joinVoiceChannel } from '@discordjs/voice';
+import { AudioPlayerStatus, createAudioPlayer, joinVoiceChannel } from '@discordjs/voice';
 import { Collection, Guild, GuildMember, VoiceChannel } from 'discord.js';
 
-import { raw as ytdl } from 'youtube-dl-exec';
 import { client } from '../index.js';
 import { basicEmbed, replyEmbed } from '../utils/index.js';
 import Queue, { Track } from './queue.js';
+import MessageContext from './messages/context.js';
+import { lonely } from './messages/index.js';
 
 
 const players = new Collection();
@@ -48,7 +49,7 @@ export function registerEvents() {
       return; // no player in this channel
     }
 
-    player.lastChannel?.send({ embeds: [ Messages.disconnected() ] });
+    player.msgCtx.send(lonely);
     player.die();
   });
 }
@@ -58,6 +59,8 @@ export class Player {
    * @param {Guild} guild 
    */
   constructor(guild) {
+    this.msgCtx = new MessageContext(this);
+
     // get the guild object
     this.guild = guild;
     this.currentVoice = null;
@@ -168,7 +171,7 @@ export class Player {
     }
     
     this.currentTrack = this.queue.next();
-    this.playYouTube(this.currentTrack.url);
+    this.currentTrack.play(this);
   }
 
   playUniversal(audioResource) {
