@@ -92,6 +92,9 @@ client.on('guildCreate', async guild => {
 // send all interactions to Registry.handle
 client.on('interactionCreate', Registry.handle);
 
+// send the exceptions to console.error, do not take the bot offline
+process.on('uncaughtException', console.error);
+
 client.login(Config.config().token).catch(() => {
   console.log('Failed to login, check the config and update the token');
 });
