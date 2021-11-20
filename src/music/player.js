@@ -171,12 +171,24 @@ export class Player {
     this.playYouTube(this.currentTrack.url);
   }
 
-  playUniversal(audioResource) {
-    if (!this.connection || !this.player) {
+  playYouTube(url) {
+    let stream = ytdl(url, {
+      o: '-',
+      q: true, 
+      f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio', 
+      r: '100K'
+    }, { stdio: [ 'ignore', 'pipe' ] });
+
+    if (!stream.stdout) {
       return;
     }
 
-    this.player.play(audioResource);
+    stream.once('spawn', () => {
+      // once the YouTube stream begins start taking the output and
+      // demux it into an OGG or WebM format to play as an audio resource
+      demuxProbe(stream.stdout)
+        .then(probe => this.player.play(createAudioResource(probe.stream, { metadata: this, inputType: probe.type })));
+    });
   }
 
   die() {
