@@ -4,13 +4,18 @@ import * as Registry from './commands/registry.js';
 import * as Player from './music/player.js';
 
 import { REST } from '@discordjs/rest';
+import Brain from './brain.js';
 
 
 export const client = new Discord.Client({ intents: [ 'GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES', 'GUILD_VOICE_STATES' ] });
 export const rest   = new REST({ version: 9 });
 
+let brainInst;
+
 client.once('ready', async () => {
   console.log(`${client.user.username} is running`);
+
+  brainInst = await Brain.init();
 
   client.user.setPresence({
     activities: [ { type: 'LISTENING', name: 'Spotify' } ]
@@ -54,6 +59,12 @@ client.on('messageCreate', async msg => {
     return;
   }
 
+  // check for a mention in the message
+  if (msg.mentions.has(client.user.id) && brainInst) {
+    brainInst.processMentioned(msg);
+    return;
+  }
+
   // run with a 10% chance and only every 60 seconds
   if (Date.now() - lastMessage < 60 || Math.random() > .1) {
     return;
@@ -75,12 +86,6 @@ client.on('messageCreate', async msg => {
     msg.reply({ content: greeting, failIfNotExists: false });
     lastMessage = Date.now();
     return;
-  }
-
-  // check the regex101 link for examples: https://regex101.com/r/hImFl6/
-  if (/(i? +do *n[o']?t like|i hate|die|fuck) +(you ?)?tom/gi.test(msg.content)) {
-    lastMessage = Date.now();
-    msg.reply({ content: ':(', failIfNotExists: false });
   }
 });
 
