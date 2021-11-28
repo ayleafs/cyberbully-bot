@@ -1,7 +1,7 @@
 import { AudioPlayerStatus, createAudioPlayer, createAudioResource, demuxProbe, joinVoiceChannel } from '@discordjs/voice';
 import { Collection, Guild, GuildMember, VoiceChannel } from 'discord.js';
 
-import { raw as ytdl } from 'youtube-dl-exec';
+import ytdl from 'youtube-dl-exec';
 import { client } from '../index.js';
 import { basicEmbed, replyEmbed } from '../utils/index.js';
 import Queue, { Track } from './queue.js';
@@ -172,7 +172,7 @@ export class Player {
   }
 
   playYouTube(url) {
-    let stream = ytdl(url, {
+    let stream = ytdl.raw(url, {
       o: '-',
       q: true, 
       f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio', 
